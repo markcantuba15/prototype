@@ -38,7 +38,24 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #0056b3; /* Adjust button background color on hover as needed */
 }
-
+.success{
+	color: green;
+	font-size: 24px;
+	padding-left: 50px;
+    text-align: center;
+}
+.fail{
+	color: red;
+	font-size: 24px;
+	padding-left: 50px;
+    text-align: center;
+}
+.fail1{
+	color: red;
+	font-size: 24px;
+	padding-left: 50px;
+    text-align: center;
+}
     </style>
 </head>
 <body>
@@ -51,26 +68,44 @@ require_once('include/connection.php');
 require_once('include/function.php');
 
 
-
 if(isset($_POST['submit'])){
 
 $password = $fc->sanitize($_REQUEST['password']);
 
 $username = $fc->sanitize($_REQUEST['username']);
+$studentcode= $fc->sanitize($_REQUEST['studentcode']);
 
-
-if($fc->checkusername($username)==true){
-
-echo 'USERNAME IS ALREADY TAKEN';
-
-}
+if ($fc->checkId($studentcode)) {
+    echo '<p class="fail">Your ID has existing account!!!.</p>';
+   
+    header("refresh:1;index.php?page=register");
+    exit;
+} 
 else {
-
-if($fc->SaveUsers($username,$password)== true){
-
-    echo 'REGISTERED';
+    if ($fc->checkidStudent($studentcode)) {
+        if ($fc->checkusernameStudent($username)) {
+            echo '<p class="fail">Username Already Taken!!!.</p>';
+   
+            header("refresh:1;index.php?page=register");
+            exit;
+        } else {
+            if ($fc->SaveUsers( $studentcode,$username, $password)) {
+                echo '<p class="success">You have successfully Registered!.</p>';
+                header("refresh:1;url=login.php");
+                exit;
+            } else {
+                echo 'REGISTRATION FAILED';
+            }
+        }
+    } 
+    else {
+        echo '<p class="fail">Your ID doesnt exist!!!.</p>';
+   
+        header("refresh:1;index.php?page=register");
+        exit;
+    }
 }
-}
+
 }
 
 
@@ -78,11 +113,15 @@ if($fc->SaveUsers($username,$password)== true){
 
 
 <center>
+    <br>
 <div class="cointainer">
-    
+
+
 <h1>Registration</h1>
 <br>
 <form autocomplete="off" name="registration" action="" method="post">
+<input type="text" name="studentcode" placeholder="StudentCode" required />
+<br><br>
 <input type="text" name="username" placeholder="Username" required />
 <br><br>
 <input type="password" name="password" placeholder="Password" required />

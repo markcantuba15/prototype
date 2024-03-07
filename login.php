@@ -73,7 +73,7 @@ input[type="submit"]:hover {
        exit;
     }
    else if($fc->loginTeacher()==true){
-    header("Location:teacherfile/mainteacher.php");
+    header("refresh:1;url=TeacherFiles/teacher_mainpage.php");
    exit;
     }
     else {

@@ -89,7 +89,7 @@ else {
 }
 }
 
-function SaveUsers($username,$password){
+function SaveUsers ($studentcode,$username,$password){
 
 $password = $this -> ENCRYPT($password);
 
@@ -101,10 +101,10 @@ if(!$con){
 
 }
 else {
- $this -> table = 'users';
+ $this -> table = 'registered_student';
 
 
- $query = 'insert into ' . $this ->table.  '(USERNAME,PASSWD) values ("'.$username.'" , "'.$password.'")';
+ $query = 'insert into ' . $this ->table.  '(STUDENTCODE,USERNAME,PASSWD) values ("'.$studentcode.'" ,"'.$username.'" , "'.$password.'")';
 
 
  if(!$con->query($query)){
@@ -128,7 +128,7 @@ function checkTeacherId($teacherid){
         return false;
     }
 
-    $query = "SELECT PROF_ID FROM prof WHERE  PROF_ID = '$teacherid'";
+    $query = "SELECT TEACHERID FROM teacher WHERE  TEACHERID = '$teacherid'";
 
     $result = $con->query($query);
 
@@ -142,7 +142,7 @@ return true;
     return false;
 }
 
-function SaveTeacher($id,$firstname,$middlename,$lastname,$gender,$username,$password){
+function SaveTeacher($id,$firstname,$middlename,$lastname,$age,$gender,$email,$username,$password){
 
 $password = $this->ENCRYPT($password);
 
@@ -154,10 +154,10 @@ if(!$con){
 }
 else {
 
-    $this->table = 'prof';
+    $this->table = 'teacher';
 
-    $query = 'insert into ' . $this->table . ' (PROF_ID,FIRSTNAME,MIDDLENAME,LASTNAME,GENDER,USERNAME,PASSWD) values ("'.$id.'"
-    ,"'.$firstname.'","'.$middlename.'", "'.$lastname.'","'.$gender.'","'.$username.'","'.$password.'")';
+    $query = 'insert into ' . $this->table . '(TEACHERID,FIRSTNAME,MIDDLENAME,LASTNAME,AGE,GENDER,EMAIL,USERNAME,PASSWD) values ("'.$id.'"
+    ,"'.$firstname.'","'.$middlename.'", "'.$lastname.'","'.$age.'","'.$gender.'","'.$email.'","'.$username.'","'.$password.'")';
 
 
 
@@ -230,6 +230,8 @@ session_start();
 //assign variable to mysqli fetch and set the result var as parameter
 //create session that pass the username to the asssign variable row 
 //return true
+
+
 function checkloginDB($username , $password){
 
     $con = $this->DBlogin();
@@ -293,7 +295,7 @@ function checkloginDBinTeacher($username , $password){
     $username = $this->sanitize($username);
     $password = $this->ENCRYPT($this->sanitize($password));
 
-    $query = "select * from prof where USERNAME = '$username' and PASSWD = '$password'";
+    $query = "select * from teacher where USERNAME = '$username' and PASSWD = '$password'";
 
     $result = $con->query($query);
 
@@ -359,5 +361,205 @@ $query = "SELECT * FROM prof ORDER BY LASTNAME LIMIT 5";
 $result = $con->query($query);
   return $result;
 }
+
+
+
+
+
+
+
+//tryAdmin
+
+function checkStudentUsername($username ){
+
+    $con = $this->DBlogin();
+    
+    if (!$con){
+    
+        return false;
+    }
+    else {
+    
+    
+        $query = "SELECT USERNAME FROM users WHERE USERNAME = '$username'";
+    
+        $result = $con->query($query);
+    
+    
+        if(mysqli_num_rows($result)>0){
+    
+    
+            return true;
+        }
+        else {
+    
+            return false;
+        }
+    }
+    }
+
+    
+function checkStudentCode($studentcode ){
+
+    $con = $this->DBlogin();
+    
+    if (!$con){
+    
+        return false;
+    }
+    else {
+    
+    
+        $query = "SELECT STUDENTCODE FROM student WHERE STUDENTCODE = '$studentcode'";
+    
+        $result = $con->query($query);
+    
+    
+        if(mysqli_num_rows($result)>0){
+    
+    
+            return true;
+        }
+        else {
+    
+            return false;
+        }
+    }
+    }
+
+    //student
+    function SaveStudent($id,$firstname,$middlename,$lastname,$gender,$age,$email,$course,$section){
+        $con = $this->DBlogin();
+        if(!$con){
+        
+            return false;
+        }
+        else {
+        
+            $this->table = 'student';
+        
+            $query = 'insert into ' . $this->table . '(STUDENTCODE,FIRSTNAME,MIDDLENAME,LASTNAME,GENDER,AGE,EMAIL,COURSE,SECTION) values ("'.$id.'"
+            ,"'.$firstname.'","'.$middlename.'", "'.$lastname.'","'.$gender.'","'.$age.'","'.$email.'","'.$course.'","'.$section.'")';
+        
+        
+        
+        
+        if(!$con->query($query)){
+        
+            return false;
+            echo 'e';
+        }
+        else {
+        return true;
+        }
+        
+        }
+
+    }
+
+    function checkStudentId($studentcode){
+
+        $con = $this->DBlogin();
+    
+        if(!$con){
+    
+            return false;
+        }
+    
+        $query = "SELECT STUDENTCODE FROM student WHERE  STUDENTCODE = '$studentcode'";
+    
+        $result = $con->query($query);
+    
+        if( mysqli_num_rows($result) >0){
+    return true;
+        }
+        else {
+    
+            return false;
+        }
+        return false;
+    }
+    function checkid($id){
+
+        $con = $this->DBlogin();
+        
+        if (!$con){
+        
+            return false;
+        }
+        else {
+        
+        
+            $query = "SELECT STUDENTCODE FROM registered_student WHERE STUDENTCODE = '$id'";
+        
+            $result = $con->query($query);
+        
+        
+            if(mysqli_num_rows($result)>0){
+        
+        
+                return true;
+            }
+            else {
+        
+                return false;
+            }
+        }
+        }
+
+        function checkidStudent($id){
+
+            $con = $this->DBlogin();
+            
+            if (!$con){
+            
+                return false;
+            }
+            else {
+            
+            
+                $query = "SELECT STUDENTCODE FROM student WHERE STUDENTCODE = '$id'";
+            
+                $result = $con->query($query);
+            
+            
+                if(mysqli_num_rows($result)>0){
+            
+            
+                    return true;
+                }
+                else {
+            
+                    return false;
+                }
+            }
+            }
+        function checkusernameStudent($username){
+
+            $con = $this->DBlogin();
+            
+            if (!$con){
+            
+                return false;
+            }
+            else {
+            
+            
+                $query = "SELECT USERNAME FROM registered_student WHERE USERNAME = '$username'";
+            
+                $result = $con->query($query);
+            
+            
+                if(mysqli_num_rows($result)>0){
+            
+            
+                    return true;
+                }
+                else {
+            
+                    return false;
+                }
+            }
+            }
 }
 ?>

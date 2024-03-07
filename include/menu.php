@@ -75,6 +75,7 @@ h4 {
         <li><a href="index.php?page=About">About</a></li>
         <li><a href="index.php?page=Service">Services</a></li>
         <li><a href="index.php?page=Login">Login</a></li>
+        <li><a href="index.php?page=register">Register</a></li>
         </center>
     </ul>
 </nav>
